@@ -49,7 +49,8 @@ def get_password(prompt: str) -> str:
 
 
 def run_sudo_command(client, command, password):
-    stdin, stdout, stderr = client.exec_command(f'echo "{password}" | sudo -S bash -c \'{command}\'')
+    cmd = f'echo "{password}" | sudo -S bash -c \'{command}\''
+    stdin, stdout, stderr = client.exec_command(cmd)
     out = stdout.read().decode('utf-8', errors='replace')
     err = stderr.read().decode('utf-8', errors='replace')
     return out, err, stdout.channel.recv_exit_status()
@@ -57,9 +58,14 @@ def run_sudo_command(client, command, password):
 
 def upload_file(sftp, local_path, remote_path, client, password):
     remote_dir = os.path.dirname(remote_path)
-    run_sudo_command(client, f'mkdir -p {remote_dir}', password)
+    # Ensure directory exists with correct ownership
+    out, err, rc = run_sudo_command(client, f'mkdir -p {remote_dir} && chown {USER}:{USER} {remote_dir}', password)
+    if rc != 0:
+        print(f'  WARN: mkdir failed for {remote_dir}: {err.strip()}')
+    # Remove target if exists to avoid permission issues
+    run_sudo_command(client, f'rm -f {remote_path}', password)
     sftp.put(str(local_path), remote_path)
-    run_sudo_command(client, f'chown cpcadmin:cpcadmin {remote_path}', password)
+    run_sudo_command(client, f'chown {USER}:{USER} {remote_path}', password)
 
 
 def main():
@@ -90,9 +96,11 @@ def main():
         print(f'iTop not found at {ITOP_ROOT}')
         sys.exit(1)
 
-    # Ensure extension directory
-    out, err, rc = run_sudo_command(client, f'mkdir -p {REMOTE_BASE} && chown {USER}:{USER} {REMOTE_BASE}', password)
+    # Ensure extension directory exists and is owned by deploy user
+    out, err, rc = run_sudo_command(client, f'mkdir -p {REMOTE_BASE} && chown -R {USER}:{USER} {REMOTE_BASE} && chmod 755 {REMOTE_BASE}', password)
     print(f'Ensured remote dir: rc={rc}')
+    if rc != 0:
+        print(f'  WARN: {err.strip()}')
 
     sftp = client.open_sftp()
 
