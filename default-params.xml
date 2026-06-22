@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<parameters>
+    <database>
+        <server>localhost</server>
+        <user>itop</user>
+        <pwd>iT0p$yst3m!</pwd>
+        <name>itop</name>
+        <prefix></prefix>
+    </database>
+    <mode>upgrade</mode>
+</parameters>

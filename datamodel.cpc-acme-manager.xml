@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.1">
+    <!--
+        CPC Certificate Manager - iTop 3.1/3.2 datamodel extension
+        Defines menu entries and background task registration.
+    -->
+    <classes>
+        <!-- No custom classes required; this extension uses service-oriented architecture -->
+    </classes>
+
+    <menus>
+        <menu id="CpcAcmeManagerMenu" xsi:type="WebPageMenuNode" _created_in="cpc-acme-manager">
+            <parent>AdminTools</parent>
+            <label>CPC Certificate Manager</label>
+            <url>pages/exec.php?exec_module=cpc-acme-manager&amp;exec_page=CertManagerPage.php</url>
+            <rank>80</rank>
+        </menu>
+    </menus>
+
+    <!-- No custom profiles are required. The admin page enforces
+         UserRights::IsAdministrator() in code. Defining a profile here would
+         require matching groups that are not available on all iTop 3.2
+         instances, so it is omitted to keep the extension portable.
+    -->
+    <background_tasks>
+        <task id="CpcCertManagerCron" _created_in="cpc-acme-manager">
+            <class>Cpc\ITop\AcmeManager\Task\CertManagerBackgroundTask</class>
+            <module>cpc-acme-manager</module>
+            <frequency>300</frequency>
+        </task>
+    </background_tasks>
+</itop_design>

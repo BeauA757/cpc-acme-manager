@@ -1,0 +1,41 @@
+{
+  "runtime_base": "/var/opt/cert-manager",
+  "paths": {
+    "logs": "/var/opt/cert-manager/logs",
+    "endpoints": "/var/opt/cert-manager/endpoints",
+    "working": "/var/opt/cert-manager/work",
+    "archive": "/var/opt/cert-manager/archive",
+    "live": "/var/opt/cert-manager/live",
+    "local_itop_certs": "/home/cpcadmin/certs"
+  },
+  "synology": {
+    "host": "192.168.100.6",
+    "user": "CertAdmin",
+    "ssh_key": "/var/opt/cert-manager/endpoints/synology-pull",
+    "source_base": "/usr/local/share/acme.sh",
+    "domains": {
+      "cpcwebtech.com": {
+        "source_dir": "/usr/local/share/acme.sh/cpcwebtech.com_ecc",
+        "cert_names": ["cpcwebtech.com", "*.cpcwebtech.com"]
+      },
+      "corp.cpcot.org": {
+        "source_dir": "/usr/local/share/acme.sh/corp.cpcot.org_ecc",
+        "cert_names": ["corp.cpcot.org", "*.corp.cpcot.org"]
+      }
+    }
+  },
+  "notifications": {
+    "email_subject_prefix": "CPC Cert Alert",
+    "teams_channel_email": "b15dd0f9.cpcot.org@amer.teams.ms",
+    "also_email": []
+  },
+  "targets": [
+    {"name": "Local iTop", "host": "192.168.100.213", "user": "cpcadmin", "base_destination": "/home/cpcadmin/certs"},
+    {"name": "CPCNAS004 file share host", "host": "192.168.100.221", "user": "root", "base_destination": "/ZFS/cpckeim1/Certificates"},
+    {"name": "Dock002", "host": "192.168.100.212", "user": "root", "base_destination": "/etc/cpc-certs"},
+    {"name": "dagster02", "host": "192.168.100.190", "user": "cpc-cert-user", "base_destination": "/etc/cpc-certs"},
+    {"name": "cpcubudagsterstage01", "host": "192.168.100.65", "user": "cpc-cert-user", "base_destination": "/etc/cpc-certs"},
+    {"name": "PG01", "host": "192.168.100.104", "user": "cpc-cert-user", "base_destination": "/etc/cpc-certs"},
+    {"name": "PGStage01", "host": "192.168.100.102", "user": "cpc-cert-user", "base_destination": "/etc/cpc-certs"}
+  ]
+}

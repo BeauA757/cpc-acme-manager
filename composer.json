@@ -1,0 +1,13 @@
+{
+  "name": "cpc/itop-acme-manager",
+  "description": "GUI-driven certificate orchestration for iTop 3.1.1+",
+  "type": "project",
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cpc\\ITop\\AcmeManager\\": "src/"
+    }
+  }
+}
