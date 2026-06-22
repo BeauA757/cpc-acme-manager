@@ -9,7 +9,7 @@
     <name>itop</name>
     <prefix></prefix>
   </database>
-  <url>http://192.168.100.50/</url>
+  <url>http://192.168.100.34/</url>
   <admin_account>
     <user>admin</user>
     <pwd>admin</pwd>
