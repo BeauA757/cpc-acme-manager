@@ -86,7 +86,7 @@ CSS
 
         $oPage->add('<div class="cpc-cert-card">');
         $oPage->add('<p><strong>Version:</strong> 1.2.0 | <strong>Compatible:</strong> iTop 3.1/3.2</p>');
-        $oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=CertManagerPage.php&action=execute" class="btn btn-primary"><span class="fas fa-play"></span> Execute Pipeline</a>');
+$oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=pages/CertManagerPage.php&action=execute" class="btn btn-primary"><span class="fas fa-play"></span> Execute Pipeline</a>');
         $oPage->add('</div>');
 
         $oPage->add('<div class="cpc-cert-card">');
@@ -139,7 +139,7 @@ CSS
         $oPage->add('<h2>Execution Report</h2>');
         $oPage->add('<pre class="cpc-cert-pre">' . \htmlentities(json_encode($report, JSON_PRETTY_PRINT)) . '</pre>');
 
-        $oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=CertManagerPage.php" class="btn btn-default"><span class="fas fa-arrow-left"></span> Back to Dashboard</a>');
+$oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=pages/CertManagerPage.php" class="btn btn-default"><span class="fas fa-arrow-left"></span> Back to Dashboard</a>');
         $oPage->add('</div>');
     }
 }
