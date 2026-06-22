@@ -3,16 +3,36 @@ import os
 import sys
 import getpass
 from pathlib import Path
+import re
 
 # ---------------------------------------------------------------------------
 # Secure deployment script for CPC Certificate Manager iTop extension
-# Credentials are read from environment variables or interactive prompts
+# Credentials are read from creds.txt, environment variables, or interactive prompts
 # ---------------------------------------------------------------------------
 
-HOST = os.environ.get('ITOP_DEPLOY_HOST', '**************')
-USER = os.environ.get('ITOP_DEPLOY_USER', 'cpcadmin')
+def _read_creds():
+    """Parse IP and password from creds.txt if it exists."""
+    creds_path = Path(__file__).parent / 'creds.txt'
+    ip, user, password = None, 'cpcadmin', None
+    if creds_path.is_file():
+        text = creds_path.read_text(encoding='utf-8', errors='replace')
+        ip_match = re.search(r'IP:\s*([\d\.]+)', text)
+        if ip_match:
+            ip = ip_match.group(1)
+        user_match = re.search(r'Username:\s*(\S+)', text)
+        if user_match:
+            user = user_match.group(1)
+        pass_match = re.search(r'Password:\s*(\S+)', text)
+        if pass_match:
+            password = pass_match.group(1)
+    return ip, user, password
+
+_CRED_IP, _CRED_USER, _CRED_PASS = _read_creds()
+
+HOST = os.environ.get('ITOP_DEPLOY_HOST', _CRED_IP or '')
+USER = os.environ.get('ITOP_DEPLOY_USER', _CRED_USER or 'cpcadmin')
 SSH_KEY = os.environ.get('ITOP_DEPLOY_KEY', '')  # path to private key
-SUDO_PASSWORD = os.environ.get('ITOP_SUDO_PASSWORD', '')
+SUDO_PASSWORD = os.environ.get('ITOP_SUDO_PASSWORD', _CRED_PASS or '')
 
 LOCAL_DIR = Path.home() / 'Desktop' / 'CERT Manager'
 REMOTE_BASE = '/var/www/html/itop/extensions/cpc-acme-manager'
