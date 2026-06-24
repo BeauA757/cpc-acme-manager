@@ -22,7 +22,7 @@ class CertManagerPageController
     {
         // Use WebPage instead of iTopWebPage in exec.php context to avoid
         // NavigationMenuFactory and theme initialization errors in iTop 3.2
-        $oPage = new \WebPage('CPC Certificate Manager');
+        $oPage = new \WebPage('Cert Manager');
 
         // Enforce authentication (iTop 3.1+ uses UserRights)
         if (!\UserRights::IsLoggedIn()) {
@@ -83,11 +83,11 @@ CSS
         );
 
         $oPage->add('<div class="page_header">');
-        $oPage->add('<h1><span class="fas fa-shield-alt"></span> CPC Certificate Manager</h1>');
+        $oPage->add('<h1><span class="fas fa-shield-alt"></span> Cert Manager</h1>');
         $oPage->add('</div>');
 
         $oPage->add('<div class="cpc-cert-card">');
-        $oPage->add('<p><strong>Version:</strong> 1.2.0 | <strong>Compatible:</strong> iTop 3.1/3.2</p>');
+        $oPage->add('<p><strong>Version:</strong> 1.2.0 | <strong>Compatible:</strong> iTop 3.2</p>');
 $oPage->add('<a href="?exec_module=cpc-acme-manager&amp;exec_page=pages/CertManagerPage.php&amp;action=execute" class="btn btn-primary"><span class="fas fa-play"></span> Execute Pipeline</a>');
         $oPage->add('</div>');
 
@@ -130,7 +130,7 @@ $oPage->add('<a href="?exec_module=cpc-acme-manager&amp;exec_page=pages/CertMana
     {
         $oPage->add_style('.cpc-cert-pre{background:#f0f3f8;padding:8px;border-radius:4px;overflow:auto;max-height:600px}');
         $oPage->add('<div class="page_header">');
-        $oPage->add('<h1><span class="fas fa-shield-alt"></span> CPC Certificate Manager — Execution</h1>');
+        $oPage->add('<h1><span class="fas fa-shield-alt"></span> Cert Manager — Execution</h1>');
         $oPage->add('</div>');
 
         $oPage->add('<div class="cpc-cert-card">');

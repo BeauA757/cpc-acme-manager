@@ -432,7 +432,7 @@ class VerifyExtension
         } catch (\Throwable $e) {
             // ignore
         }
-        $this->assert($found, 'Menu CpcAcmeManagerMenu is registered in compiled datamodel');
+        $this->assert($found, 'Menu Cert Manager is registered in compiled datamodel');
     }
 
     private function testItopBackgroundTaskRegistered(): void
@@ -453,7 +453,7 @@ class VerifyExtension
         } catch (\Throwable $e) {
             // ignore
         }
-        $this->assert($found, 'Background task for module ' . self::MODULE_CODE . ' is registered in compiled datamodel');
+        $this->assert($found, 'Background task Cert Manager is registered in compiled datamodel');
     }
 
     // ─── Helpers ───

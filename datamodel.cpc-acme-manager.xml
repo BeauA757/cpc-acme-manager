@@ -11,7 +11,7 @@
     <menus>
         <menu id="CpcAcmeManagerMenu" xsi:type="WebPageMenuNode" _created_in="cpc-acme-manager">
             <parent>AdminTools</parent>
-            <label>CPC Certificate Manager</label>
+            <label>Cert Manager</label>
             <url>pages/exec.php?exec_module=cpc-acme-manager&amp;exec_page=pages/CertManagerPage.php</url>
             <rank>80</rank>
         </menu>
