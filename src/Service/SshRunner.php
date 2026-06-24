@@ -24,7 +24,7 @@ class SshRunner
         $this->ensureControlMaster($identityFile, $user, $host, $muxSocket);
 
         $ssh = sprintf(
-            'ssh -i %s -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s@%s %s',
+            'ssh -i %s -o BatchMode=yes -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s@%s %s',
             escapeshellarg($identityFile),
             escapeshellarg($muxSocket),
             escapeshellarg($user),
@@ -43,7 +43,7 @@ class SshRunner
         $this->ensureControlMaster($identityFile, $user, $host, $muxSocket);
 
         return sprintf(
-            'scp -i %s -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s@%s:%s %s',
+            'scp -i %s -o BatchMode=yes -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s@%s:%s %s',
             escapeshellarg($identityFile),
             escapeshellarg($muxSocket),
             escapeshellarg($user),
@@ -62,7 +62,7 @@ class SshRunner
         $this->ensureControlMaster($identityFile, $user, $host, $muxSocket);
 
         return sprintf(
-            'scp -i %s -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s %s@%s:%s',
+            'scp -i %s -o BatchMode=yes -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s %s@%s:%s',
             escapeshellarg($identityFile),
             escapeshellarg($muxSocket),
             escapeshellarg($localPath),
@@ -86,7 +86,7 @@ class SshRunner
         $commands = [];
         foreach ($files as $file) {
             $commands[] = sprintf(
-                'scp -i %s -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s@%s:%s %s',
+                'scp -i %s -o BatchMode=yes -o ConnectTimeout=30 -o ControlPath=%s -o ControlMaster=no %s@%s:%s %s',
                 escapeshellarg($identityFile),
                 escapeshellarg($muxSocket),
                 escapeshellarg($user),
@@ -140,12 +140,10 @@ class SshRunner
 
     public function closeAllConnections(): void
     {
-        foreach ($this->openConnections as $key => $active) {
-            if (!$active) {
-                continue;
-            }
-            // Best-effort cleanup of control sockets in temp dir
-            foreach (glob($this->controlPathBase . '_*_control') as $sock) {
+        // Best-effort cleanup of control sockets in temp dir
+        $files = glob($this->controlPathBase . '_*_control');
+        if ($files !== false) {
+            foreach ($files as $sock) {
                 if (file_exists($sock)) {
                     @unlink($sock);
                 }

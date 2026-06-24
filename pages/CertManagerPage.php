@@ -9,15 +9,20 @@ namespace Cpc\ITop\AcmeManager\Controller;
 
 use Cpc\ITop\AcmeManager\Service\CertificatePipeline;
 
-require_once APPROOT . '/application/webpage.class.inc.php';
-require_once APPROOT . '/application/displayblock.class.inc.php';
+// Ensure iTop runtime dependencies (including SetupUtils) are loaded when
+// this page is executed via exec.php, which does not include startup.inc.php.
+// SetupUtils is required by ThemeHandler and DataModelDependantCache in iTop 3.2
+require_once(APPROOT.'/setup/setuputils.class.inc.php');
+require_once(APPROOT.'/application/application.inc.php');
+require_once(APPROOT.'/application/startup.inc.php');
 
 class CertManagerPageController
 {
     public static function Run(): void
     {
-        \WebPage::AddTabContainer('CPC Cert Manager', 'cert-manager', 'CPC Certificate Manager');
-        $oPage = new \iTopWebPage('CPC Certificate Manager');
+        // Use WebPage instead of iTopWebPage in exec.php context to avoid
+        // NavigationMenuFactory and theme initialization errors in iTop 3.2
+        $oPage = new \WebPage('CPC Certificate Manager');
 
         // Enforce authentication (iTop 3.1+ uses UserRights)
         if (!\UserRights::IsLoggedIn()) {
@@ -33,9 +38,6 @@ class CertManagerPageController
             $oPage->output();
             return;
         }
-
-        $oPage->SetBreadCrumbEntry('ui-tool-run', \Dict::S('UI:RunQuery:Menu'), \Dict::S('UI:RunQuery:Menu+'), '', 'fas fa-cogs', 'maintenance');
-        $oPage->SetBreadCrumbEntry('cert-manager', 'CPC Certificate Manager', 'CPC Certificate Manager', '', 'fas fa-shield-alt', 'maintenance');
 
         try {
             $pipeline = new CertificatePipeline();
@@ -60,7 +62,7 @@ class CertManagerPageController
         $oPage->output();
     }
 
-    private static function RenderDashboard(\iTopWebPage $oPage, CertificatePipeline $pipeline): void
+    private static function RenderDashboard(\WebPage $oPage, CertificatePipeline $pipeline): void
     {
         $checks = $pipeline->verifyConfig();
         $domains = $pipeline->plannedDomains();
@@ -86,7 +88,7 @@ CSS
 
         $oPage->add('<div class="cpc-cert-card">');
         $oPage->add('<p><strong>Version:</strong> 1.2.0 | <strong>Compatible:</strong> iTop 3.1/3.2</p>');
-$oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=pages/CertManagerPage.php&action=execute" class="btn btn-primary"><span class="fas fa-play"></span> Execute Pipeline</a>');
+$oPage->add('<a href="?exec_module=cpc-acme-manager&amp;exec_page=pages/CertManagerPage.php&amp;action=execute" class="btn btn-primary"><span class="fas fa-play"></span> Execute Pipeline</a>');
         $oPage->add('</div>');
 
         $oPage->add('<div class="cpc-cert-card">');
@@ -124,7 +126,7 @@ $oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=pages/CertManagerP
         $oPage->add('<pre class="cpc-cert-pre">' . \htmlentities(print_r($notification, true)) . '</pre></div>');
     }
 
-    private static function RenderExecution(\iTopWebPage $oPage, CertificatePipeline $pipeline): void
+    private static function RenderExecution(\WebPage $oPage, CertificatePipeline $pipeline): void
     {
         $oPage->add_style('.cpc-cert-pre{background:#f0f3f8;padding:8px;border-radius:4px;overflow:auto;max-height:600px}');
         $oPage->add('<div class="page_header">');
@@ -139,7 +141,7 @@ $oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=pages/CertManagerP
         $oPage->add('<h2>Execution Report</h2>');
         $oPage->add('<pre class="cpc-cert-pre">' . \htmlentities(json_encode($report, JSON_PRETTY_PRINT)) . '</pre>');
 
-$oPage->add('<a href="?exec_module=cpc-acme-manager&exec_page=pages/CertManagerPage.php" class="btn btn-default"><span class="fas fa-arrow-left"></span> Back to Dashboard</a>');
+$oPage->add('<a href="?exec_module=cpc-acme-manager&amp;exec_page=pages/CertManagerPage.php" class="btn btn-default"><span class="fas fa-arrow-left"></span> Back to Dashboard</a>');
         $oPage->add('</div>');
     }
 }

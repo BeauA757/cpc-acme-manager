@@ -12,8 +12,8 @@ SetupWebPage::AddModule(
         'label' => 'CPC Certificate Manager',
         'category' => 'business',
         'dependencies' => [
-            'itop-config-mgmt/3.1.0',
-            'itop-tickets/3.1.0',
+            'itop-config-mgmt/3.2.1',
+            'itop-tickets/3.2.1',
         ],
         'mandatory' => false,
         'visible' => true,

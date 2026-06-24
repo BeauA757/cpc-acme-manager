@@ -143,10 +143,15 @@ class CertificatePipeline
 
     public function notificationPreview(): array
     {
-        return $this->notificationService()->sendSummary(
-            'Certificate pipeline preview',
-            'Planned domains: ' . implode(', ', array_keys($this->plannedDomains()))
-        );
+        return [
+            'preview' => true,
+            'subject' => ($this->config['notifications']['email_subject_prefix'] ?? 'CPC Cert Alert') . ' - Certificate pipeline preview',
+            'body' => 'Planned domains: ' . implode(', ', array_keys($this->plannedDomains())),
+            'targets' => array_filter(array_merge(
+                [$this->config['notifications']['teams_channel_email'] ?? ''],
+                $this->config['notifications']['also_email'] ?? []
+            )),
+        ];
     }
 
     /**
@@ -172,8 +177,10 @@ class CertificatePipeline
 
         try {
             $pull = $this->pullPlans();
-            foreach ($pull as $domain => $plan) {
+            $ssh = $this->ssh();
+        foreach ($pull as $domain => $plan) {
                 foreach ($plan['commands'] as $cmd) {
+                    $output = [];
                     exec($cmd . ' 2>&1', $output, $exitCode);
                     if ($exitCode !== 0) {
                         $report['errors'][] = ['step' => 'pull', 'domain' => $domain, 'error' => implode("\n", $output)];
@@ -206,8 +213,17 @@ class CertificatePipeline
                     $src = $workDir . '/' . $srcName;
                     $dst = $dest . '/' . $outName;
                     if (is_file($src)) {
-                        copy($src, $dst);
-                        chmod($dst, 0644);
+                        if (!copy($src, $dst)) {
+                            $err = "Failed to copy {$src} to {$dst}";
+                            $report['errors'][] = ['step' => 'localDeploy', 'domain' => $domain, 'error' => $err];
+                            $logger->error($err);
+                            continue;
+                        }
+                        if (!chmod($dst, 0644)) {
+                            $err = "Failed to chmod {$dst}";
+                            $report['errors'][] = ['step' => 'localDeploy', 'domain' => $domain, 'error' => $err];
+                            $logger->error($err);
+                        }
                     }
                 }
                 $logger->info("Local deploy completed for {$domain}");
@@ -240,6 +256,7 @@ class CertificatePipeline
 
                 foreach (['fullchain.cer', $plan['domain'] . '.cer', $plan['domain'] . '.key'] as $file) {
                     $cmd = $this->ssh()->scpTo($identity, $t['user'], $t['host'], $workDir . '/' . $file, $remoteDest . '/' . $file);
+                    $output = [];
                     exec($cmd . ' 2>&1', $output, $exitCode);
                     if ($exitCode !== 0) {
                         $report['errors'][] = [
