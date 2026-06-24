@@ -4,8 +4,8 @@
  */
 
 Dict::Add('EN US', 'English', 'English', [
-    'CpcAcmeManagerMenu' => 'Cert Manager',
-    'CpcAcmeManagerMenu+' => 'GUI-driven certificate orchestration dashboard',
+    'Menu:CpcAcmeManagerMenu' => 'Certificate Management',
+    'Menu:CpcAcmeManagerMenu+' => 'GUI-driven certificate orchestration dashboard',
     'CpcAcmeManager:Execution' => 'Execution',
     'CpcAcmeManager:Execution+' => 'Execute certificate pipeline',
     'CpcAcmeManager:Dashboard' => 'Dashboard',

@@ -388,7 +388,7 @@ class VerifyExtension
 
         $content = file_get_contents($dictPath);
         $this->assert(strpos($content, 'Dict::Add') !== false, 'Dictionary contains Dict::Add call');
-        $this->assert(strpos($content, 'CpcAcmeManagerMenu') !== false, 'Dictionary defines CpcAcmeManagerMenu');
+        $this->assert(strpos($content, 'Menu:CpcAcmeManagerMenu') !== false, 'Dictionary defines Menu:CpcAcmeManagerMenu');
     }
 
     private function testPageController(): void
@@ -432,7 +432,7 @@ class VerifyExtension
         } catch (\Throwable $e) {
             // ignore
         }
-        $this->assert($found, 'Menu Cert Manager is registered in compiled datamodel');
+        $this->assert($found, 'Menu Certificate Management is registered in compiled datamodel');
     }
 
     private function testItopBackgroundTaskRegistered(): void
@@ -453,7 +453,7 @@ class VerifyExtension
         } catch (\Throwable $e) {
             // ignore
         }
-        $this->assert($found, 'Background task Cert Manager is registered in compiled datamodel');
+        $this->assert($found, 'Background task Certificate Management is registered in compiled datamodel');
     }
 
     // ─── Helpers ───
